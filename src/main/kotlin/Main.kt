@@ -136,6 +136,83 @@ class DuckyDuck2{
 
 // an object expression is an expression that creates an anonymous object with no predefined type
 
+// 7.Extensions
+// extensions let you add new functions and properties to an existing type without you having to create a whole new subtype
+
+fun Any.toDollar(): String{
+    return "$$this" // the function takes the current object (referred to using this)
+}
+// you can create extension properties in a similar way
+
+val String.halfLength
+    get() = length / 2.0
+
+// Design patterns are general-purpose solutions for common problems.
+
+// 8. Return, break and continue.
+// three ways to jumping out of a loop
+// - return
+// - break (terminates the enclosing loop or jumps to the end of)
+/* var x = 0
+var y = 0
+while (x < 10) {
+x++
+break
+y++
+ */ // final x = 1, y = 0
+// - continue (this moves to the next iteration of the enclosing loop)
+/* var x = 0
+var y = 0
+while (x < 10) {
+x++
+continue
+y++
+ */ // final x = 10, y = 0
+
+// using labels
+// in case of nested loop, you can explicitly specify which loop you want to jump out
+
+fun myFun(){
+    listOf("A", "B", "C", "D").forEach {
+    if (it == "C") return@forEach
+    println(it)
+}
+    println("Finished myFun")
+}
+
+// 9. More functions
+
+// 1). vararg (means variable number of arguments)
+// - if you want a function to accept multiple arguments of the same type
+
+fun <T> valuesToList (vararg vals : T): MutableList<T>{
+    val list: MutableList <T> = mutableListOf()
+    for (i in vals){
+        list.add(i)
+    }
+    return list
+}
+// only one parameter can be marked with vararg (usually - the last)
+
+// 2). infix
+// if you prefix a function woth infix, you can call it without using the dot notation
+
+class Whale {
+    infix fun swim (x: String): String{
+        return x
+    }
+}
+
+// 3). inline - used to improve a performance of function
+
+inline fun convert (x: Double, converter: (Double) -> Double): Double{
+    val result = converter(x)
+    println("$x is converted to $result")
+    return result
+}
+
+// 10. Interoperability
+// with Java, JavaScript and native libraries
 
 fun main(){
     val duck = myPackage.Duck() // this is the fully qualified name
@@ -186,5 +263,39 @@ fun main(){
     }
 
     println("starting point is ${startingPoint.x} and ${startingPoint.y}")
-    
+
+    val getADollar = 45.25
+    val testTest = 45
+    println(getADollar.toDollar())
+    println(testTest.toDollar())
+
+    val myTest = "This is a test"
+    println(myTest.halfLength)
+
+    var breakX = 0
+    var breakY = 0
+    myloop@ while (breakX < 20){
+        while (breakY < 20){
+            breakX++
+            break@myloop
+        }
+    }
+    println("$breakX, $breakY")
+
+    myFun()
+
+    val mList = valuesToList(1,2,3,4,5)
+    println(mList)
+    val mList2 = valuesToList("A","B","C","D")
+    println(mList2)
+
+    val myArray = arrayOf(1,2,3,4,5)
+    val mList3 = valuesToList(*myArray) // * is the spread operator
+    println(mList3)
+    val mList4 = valuesToList(0, *myArray, 6, 7)
+    println(mList4)
+
+    val myWhale = Whale()
+    println(myWhale swim "Its swimming")
+
 }
